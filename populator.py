@@ -10,10 +10,18 @@ def parseInvoices(filename):
     items = []
     id = 0
     tax_brackets = ['17','15','12.5','10','8.5','5.5','3']
+    contractor_types = ['os.fiz.','PL','Foreign','N/A']
+
     for line in lines:
         data = line.split(",")
         
-        invoices.append("("+str(0) + ",'"+data[0]+"','"+data[1]+"','"+data[2]+"','"+data[3]+"',"+str(id)+")")
+        contractorType = 2
+        if data[3].strip()[0].isnumeric() == False:
+            contractorType = 2
+        if data[3].strip() == 'osoba fizyczna' or data[3].strip() == 'os. fiz.':
+            contractorType = 0
+
+        invoices.append("("+str(0) + ",'"+data[0]+"','"+data[1]+"','"+data[2]+"','"+ contractor_types[contractorType]+"','"+data[3]+"',"+str(id)+")")
         #print(invoices[-1])
         i = 0
         for value in data[4:11]:
@@ -35,7 +43,7 @@ def fillDb():
     invoices,items = parseInvoices("./data.csv")
 
     #print("INSERT INTO Navigator.Invoices (userId,registrationDate,transactionDate,idCardNumber,contractorNip,invoiceId) values " + ",".join(invoices))
-    mycursor.execute("INSERT INTO Invoices (userId,registrationDate,transactionDate,idCardNumber,contractorNip,invoiceId) VALUES " + ",".join(invoices))
+    mycursor.execute("INSERT INTO Invoices (userId,registrationDate,transactionDate,idCardNumber,contractorType,contractorNip,invoiceId) VALUES " + ",".join(invoices))
     mycursor.execute("INSERT INTO Items (taxBracket,paymentValue,invoiceId) VALUES " + ",".join(items))
     navigator.commit()
     navigator.close()

@@ -2,7 +2,10 @@ DROP DATABASE IF EXISTS Navigator;
 CREATE DATABASE IF NOT EXISTS Navigator;
 USE Navigator;
 
-CREATE TABLE IF NOT EXISTS Users(name varchar(255),
+CREATE TABLE IF NOT EXISTS Users(
+login varchar(255),
+password varchar(255),
+name varchar(255),
 surname varchar(255),
 nip varchar(255),
 id int NOT NULL AUTO_INCREMENT,
@@ -15,7 +18,7 @@ PRIMARY KEY(userId));
 
 CREATE TABLE IF NOT EXISTS Invoices(userId int,
 invoiceId int,
-contractorType ENUM('osoba fizyczna','N/A','PL','Foreign'),
+contractorType ENUM('os.fiz.','N/A','PL','Foreign'),
 contractorNip varchar(255),
 idCardNumber varchar(255),
 transactionDate date,
