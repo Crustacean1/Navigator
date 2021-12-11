@@ -5,30 +5,35 @@ USE Navigator;
 CREATE TABLE IF NOT EXISTS Users(name varchar(255),
 surname varchar(255),
 nip varchar(255),
-id int,
-PRIMARY KEY(id) AUTO_INCREMENT);
+id int NOT NULL AUTO_INCREMENT,
+PRIMARY KEY(id) );
 
 
 CREATE TABLE IF NOT EXISTS UserPreferences(userId int,
 transactionPeriod  ENUM('QUARTERLY','MONTHLY'),
 PRIMARY KEY(userId));
 
-CREATE TABLE IF NOT EXISTS Transactions(userId int,
-constractorType ENUM('osoba fizyczna','N/A','PL','Foreign'),
+CREATE TABLE IF NOT EXISTS Invoices(userId int,
+invoiceId int,
+contractorType ENUM('osoba fizyczna','N/A','PL','Foreign'),
 contractorNip varchar(255),
-transactionDate DATE,
-registrationDate DATE,
-taxBracket ENUM('17','15','12.5','10','8.5','5.5','3'),
+idCardNumber varchar(255),
+transactionDate date,
+registrationDate date,
+notes varchar(511),
+PRIMARY KEY(userId,invoiceId));
+
+CREATE TABLE IF NOT EXISTS Items(taxBracket ENUM('17','15','12.5','10','8.5','5.5','3'),
 paymentValue int,
-id int,
-PRIMARY KEY(userId,transactionDate,id) );
+invoiceId int,
+PRIMARY KEY(invoiceId,taxBracket) );
 
 -- May or may not be used
-CREATE TABLE TaxPayment(userId int,
-paymentDate date,
-paymentValue int,
-id int,
-taxType = ENUM('health','social','lump'),
+CREATE TABLE TaxPayment(userId int NOT NULL,
+paymentDate date NOT NULL,
+paymentValue int NOT NULL,
+id int NOT NULL,
+taxType ENUM('health','social','lump') NOT NULL,
 PRIMARY KEY(userId,id));
 
 
