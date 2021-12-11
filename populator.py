@@ -43,8 +43,12 @@ def fillDb():
     invoices,items = parseInvoices("./data.csv")
 
     #print("INSERT INTO Navigator.Invoices (userId,registrationDate,transactionDate,idCardNumber,contractorNip,invoiceId) values " + ",".join(invoices))
-    mycursor.execute("INSERT INTO Invoices (userId,registrationDate,transactionDate,idCardNumber,contractorType,contractorNip,invoiceId) VALUES " + ",".join(invoices))
-    mycursor.execute("INSERT INTO Items (taxBracket,paymentValue,invoiceId) VALUES " + ",".join(items))
+    print("INSERT INTO Invoices (userId,registrationDate,transactionDate,idCardNumber,contractorType,contractorNip,invoiceId) VALUES " + ",".join(invoices))
+    print("INSERT INTO Items (taxBracket,paymentValue,invoiceId) VALUES " + ",".join(items))
+    print("INSERT INTO Users (login,password,name,surname,nip) values ('jp2','gmd','janusz','pavlacz','2137')")
+    # mycursor.execute("INSERT INTO Invoices (userId,registrationDate,transactionDate,idCardNumber,contractorType,contractorNip,invoiceId) VALUES " + ",".join(invoices))
+    # mycursor.execute("INSERT INTO Items (taxBracket,paymentValue,invoiceId) VALUES " + ",".join(items))
+    # mycursor.execute("INSERT INTO Users (login,password,name,surname,nip) values ('jp2','gmd','janusz','pavlacz','2137')")
     navigator.commit()
     navigator.close()
     
