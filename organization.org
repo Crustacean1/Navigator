@@ -1,0 +1,6 @@
+* Navigator
+** Features
+*** Data entry and display with different categories and parameters (mainly transactions)
+*** Keeping track of taxes payments (reminding of dates, and storing info)
+*** Computibng taxes, health and social payments
+*** Check validity of income threshold
