@@ -87,9 +87,8 @@ def monthly_report(req: TableRequest):
     db = getDb()
     cursor = db.cursor()
     fields = ["invoiceId","contractorType","contractorNip","idCardNumber","transactionDate","registrationDate","notes","pit17","pit15","pit12","pit10","pit85","pit55","pit03"]
-    brakcets = ["17","15","12.5","10","8.5","5.5","3"]
-    sqlQuery = "SELECT "+ ",".join(fields) + " FROM Invoices WHERE userId=%s"
-    cursor.execute(sqlQuery,(userId,))
+    sqlQuery = "SELECT "+ ",".join(fields) + " FROM Invoices WHERE userId=%s AND MONTH(transactionDate)=%s AND YEAR(transactionDate)=%s"
+    cursor.execute(sqlQuery,(userId,req.month,req.year))
     rows = cursor.fetchall()
     result = []
     for row in rows:
@@ -99,3 +98,62 @@ def monthly_report(req: TableRequest):
             result[-1][fields[i]] = val
             i+=1
     return {"userId": userId,"table":result}
+
+class InvoiceAddReq(BaseModel):
+    token: str
+
+    contractorType: str
+    contractorNip: str
+    idCardNumber: str
+    transactionDate: str
+    registrationDate: str
+    pit17: Optional[int]
+    pit15: Optional[int]
+    pit12: Optional[int]
+    pit10: Optional[int]
+    pit85: Optional[int]
+    pit55: Optional[int]
+    pit03: Optional[int]
+    notes: Optional[str]
+    
+
+@app.post("/addinvoice")
+def add_invoice(req:InvoiceAddReq):
+    userId = getUserFromToken(req.token)
+    if userId == -1:
+        return {"status":"permission denied"}
+    db = getDb()
+    cursor = db.cursor()
+    sqlQuery = "INSERT INTO Invoices (userId,contractorType,contractorNip,idCardNumber,transactionDate,registrationDate,pit17,pit15,pit12,pit10,pit85,pit55,pit03,notes) value (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+    #eursor.execute(sqlQuery,(req.contractorType,req.contractorNip,req.idCardNumber,req.transactionDate,req.registrationDate,req.pit,req.notes))
+    try:
+        cursor.execute(sqlQuery,(userId,req.contractorType,req.contractorNip,req.idCardNumber,req.transactionDate,req.registrationDate,req.pit17 or 0,req.pit15 or 0,req.pit12 or 0,req.pit10 or 0,req.pit85 or 0,req.pit55 or 0,req.pit03 or 0, req.notes or ""))
+    except Exception as e:
+        return {"status":1,"desc":"failed to write to db"}
+    db.commit()
+    db.close()
+    return {"status":0}
+
+class SummaryReq(BaseModel):
+    token: str
+
+    month: str
+    year: str
+    
+@app.post("/summary")
+def get_summary(req: SummaryReq):
+   userId = getUserFromToken(req.token)
+   if userId == -1:
+       return {"status":"permission denied"}
+   db = getDb()
+   cursor = db.cursor()
+   sqlQuery = "SELECT SUM(pit17),SUM(pit15),SUM(pit12),SUM(pit10),SUM(pit85),SUM(pit55),SUM(pit03) FROM Invoices WHERE MONTH(transactionDate)=%s AND YEAR(transactionDate)=%s";
+   try:
+       cursor.execute(sqlQuery,(req.month,req.year))
+       rows = cursor.fetchall()
+       if len(rows) > 0:
+           total = rows[0]
+           return {"summary":rows[0]}
+   except Exception as e:
+       return {"summary":[],"error":"failed to connect to db"}
+   return {"summary":[],"error":"no records found"} 

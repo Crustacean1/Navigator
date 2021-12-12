@@ -21,7 +21,7 @@ def parseInvoices(filename):
         if data[3].strip() == 'osoba fizyczna' or data[3].strip() == 'os. fiz.':
             contractorType = 0
 
-        invoices.append("("+str(0) + ",'"+data[0]+"','"+data[1]+"','"+data[2]+"','"+ contractor_types[contractorType]+"','"+data[3]+"',"+ ",".join([(x.replace(".","")) for x in data[4:11]])+","+str(id)+")")
+        invoices.append("("+str(0) + ",'"+data[0]+"','"+data[1]+"','"+data[2]+"','"+ contractor_types[contractorType]+"','"+data[3]+"',"+ ",".join([(x.replace(".","")) for x in data[4:11]])+")")
         #print(invoices[-1])
         i = 0
         for value in data[4:11]:
