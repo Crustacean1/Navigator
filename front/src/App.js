@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 import './App.css';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { Login } from './auth/login/Login'
 import { Report } from './ui/report/Report';
-import { Home } from './ui/home/Home';
 
 function setToken(userToken) {
   sessionStorage.setItem('token', JSON.stringify(userToken));
@@ -18,18 +16,12 @@ function getToken() {
 export function App() {
   const token = getToken();
 
+  console.log(token);
 
   if (!token) {
     return <Login setToken={setToken} getToken={getToken} />
   }
   else {
-    return (
-      <Router>
-        <Switch>
-          <Route path='/' component={() => <Report token={token} />} />
-          <Route path='/home' exact component={Home} />
-        </Switch>
-      </Router>
-    );
+    return <Report token={token} />
   }
 }

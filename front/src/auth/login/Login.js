@@ -16,10 +16,9 @@ export function Login({ setToken, getToken }) {
             .then(data => {
                 setToken(data.token);
                 if (getToken() != null) {
-                    window.location.href = "/";
+                    window.location.href = "./index.html";
                 }
             });
-
     }
     return (
         <form onSubmit={handleSubmit}>
