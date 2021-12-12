@@ -1,14 +1,9 @@
-<<<<<<< HEAD
 from fastapi import FastAPI, Response, Cookie, Request
 from pydantic import BaseModel
 from typing import Optional
 import mysql.connector
 import random
 import string
-=======
-from fastapi import FastAPI
-from database import mydb
->>>>>>> origin/master
 
 app = FastAPI()
 
