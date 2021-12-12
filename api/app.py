@@ -172,4 +172,22 @@ class CsvReq(BaseModel):
     year: str
 @app.post("/csvgenerator")
 def get_csv(req: CsvReq):
-    return {"csvfile":"todo"}
+    userId = getUserFromToken(req.token)
+    if userId == -1:
+        return {"status":1,"desc":"permission denied"}
+    db = getDb()
+    cursor = db.cursor()
+    fields = ["contractorType","contractorNip","idCardNumber","transactionDate","registrationDate","pit17","pit15","pit12","pit10","pit85","pit55","pit03","notes"]
+    sqlQuery = "SELECT " + ",".join(fields) + " FROM Invoices WHERE MONTH(transactionDate)=%s AND YEAR(transactionDate)=%s"
+    cursor.execute(sqlQuery,(req.month,req.year))
+    rows = cursor.fetchall()
+    result = ""
+    for row in rows:
+        for val in row:
+            if val== None:
+                result += "brak , "
+            else:
+                result += str(val) + ", "
+        result = result[:-2]
+        result += '\n'
+    return {"status":0,"csvfile":result}
