@@ -8,9 +8,6 @@ export function Login({ setToken, getToken }) {
     const [password, setPassword] = useState();
 
     const handleSubmit = async e => {
-        if (getToken() != null) {
-            window.location.href = "/";
-        }
         e.preventDefault();
         await loginUser({
             login,
@@ -19,10 +16,9 @@ export function Login({ setToken, getToken }) {
             .then(data => {
                 setToken(data.token);
                 if (getToken() != null) {
-                    window.location.href = "/";
+                    window.location.href = "./index.html";
                 }
             });
-
     }
     return (
         <form onSubmit={handleSubmit}>
