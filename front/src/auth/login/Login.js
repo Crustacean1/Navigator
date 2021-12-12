@@ -8,9 +8,6 @@ export function Login({ setToken, getToken }) {
     const [password, setPassword] = useState();
 
     const handleSubmit = async e => {
-        if (getToken() != null) {
-            window.location.href = "/";
-        }
         e.preventDefault();
         await loginUser({
             login,

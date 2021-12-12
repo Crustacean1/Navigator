@@ -3,6 +3,7 @@ import './App.css';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { Login } from './auth/login/Login'
 import { Report } from './ui/report/Report';
+import { Home } from './ui/home/Home';
 
 function setToken(userToken) {
   sessionStorage.setItem('token', JSON.stringify(userToken));
@@ -26,7 +27,7 @@ export function App() {
       <Router>
         <Switch>
           <Route path='/' component={() => <Report token={token} />} />
-          {/* <Route path='/' exact component={Home} /> */}
+          <Route path='/home' exact component={Home} />
         </Switch>
       </Router>
     );

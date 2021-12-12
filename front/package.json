@@ -3,6 +3,8 @@
   "version": "0.1.1",
   "private": true,
   "main": "src/electron-starter.js",
+  "start_url": ".",
+  "homepage": ".",
   "dependencies": {
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
@@ -40,6 +42,7 @@
   "devDependencies": {
     "autoprefixer": "^9.8.8",
     "electron": "^16.0.4",
+    "electron-packager": "^15.4.0",
     "postcss": "^7.0.39",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.2.17"
   }
