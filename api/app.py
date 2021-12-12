@@ -46,11 +46,11 @@ def getUserFromToken(token: str):
     return -1
 
 
-@app.get("/")
+@app.post("/")
 def hello_world():
     return {"woo": "foo"}
 
-@app.get("/verification")
+@app.post("/verification")
 def verify_user(loginData: LoginData):
     """ function to obtain token lasting 1h, authenticating user to access his data """
     session = mysql.connector.connect(
@@ -76,7 +76,7 @@ def verify_user(loginData: LoginData):
 
     return {"login_status": "permission denied"}
 
-@app.get("/monthlyreport")
+@app.post("/monthlyreport")
 def get_monthly_report(tok: TokenData):
     """ function to retrieve tables"""
     userId = getUserFromToken(tok.token)
