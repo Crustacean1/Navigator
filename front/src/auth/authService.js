@@ -1,7 +1,7 @@
 
-const url = "http://localhost";
+const url = "http://localhost:8000";
 export async function loginUser(credensials) {
-    return fetch(`${url}/api/verification`, {
+    return fetch(`${url}/verification`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'

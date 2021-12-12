@@ -4,18 +4,16 @@ import { loginUser } from "../authService";
 import "./login.css";
 
 export function Login({ setToken, getToken }) {
-    const [username, setUserName] = useState();
+    const [login, setLogin] = useState();
     const [password, setPassword] = useState();
 
     const handleSubmit = async e => {
-        const mockData = "48AD0463531B021BB64F932D97287574";
-        setToken(mockData);
         if (getToken() != null) {
             window.location.href = "/";
         }
         e.preventDefault();
         await loginUser({
-            username,
+            login,
             password
         }).then(response => response.json())
             .then(data => {
@@ -28,11 +26,11 @@ export function Login({ setToken, getToken }) {
     }
     return (
         <form onSubmit={handleSubmit}>
-            <div class="logo"></div>
-            <div class="login-block">
+            <div className="logo"></div>
+            <div className="login-block">
                 <h1>Login</h1>
-                <input onChange={e => setUserName(e.target.value)} type="text" value="" placeholder="Username" id="username" />
-                <input onChange={e => setPassword(e.target.value)} type="password" value="" placeholder="Password" id="password" />
+                <input onChange={e => setLogin(e.target.value)} type="text" placeholder="Username" id="username" />
+                <input onChange={e => setPassword(e.target.value)} type="password" placeholder="Password" id="password" />
                 <button className="link" type="submit" >Submit</button>
             </div>
         </form>
