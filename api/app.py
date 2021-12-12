@@ -31,7 +31,7 @@ def getDb():
 def getUserFromToken(token: str):
     session = getDb()
     cursor = session.cursor()
-    sqlQuery = "SELECT userId FROM Sessions WHERE token=%s AND timestampdiff(HOUR,Sessions.loginDate,NOW())<2 AND active=1"
+    sqlQuery = "SELECT userId FROM Sessions WHERE token=%s AND timestampdiff(HOUR,Sessions.loginDate,NOW())<5 AND active=1"
     cursor.execute(sqlQuery,(token,))
     rows = cursor.fetchall()
     if len(rows)==1:
@@ -56,7 +56,7 @@ def verify_user(loginData: LoginData):
     if len(rows) > 0:
         userId = rows[0][0]
         randomToken = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(64))
-        sqlQuery = "UPDATE Sessions SET active=0 WHERE userId = %s AND timestampdiff(HOUR,Sessions.loginDate,NOW())<2"
+        sqlQuery = "UPDATE Sessions SET active=0 WHERE userId = %s AND timestampdiff(HOUR,Sessions.loginDate,NOW())<5"
         cursor.execute(sqlQuery,(userId,))
         sqlQuery = "INSERT INTO Sessions (userId,loginDate,token,active) values (%s,NOW(),%s,1)"
         cursor.execute(sqlQuery,(userId,randomToken))
@@ -148,12 +148,28 @@ def get_summary(req: SummaryReq):
    db = getDb()
    cursor = db.cursor()
    sqlQuery = "SELECT SUM(pit17),SUM(pit15),SUM(pit12),SUM(pit10),SUM(pit85),SUM(pit55),SUM(pit03) FROM Invoices WHERE MONTH(transactionDate)=%s AND YEAR(transactionDate)=%s";
-   try:
-       cursor.execute(sqlQuery,(req.month,req.year))
-       rows = cursor.fetchall()
-       if len(rows) > 0:
-           total = rows[0]
-           return {"summary":rows[0]}
-   except Exception as e:
-       return {"summary":[],"error":"failed to connect to db"}
+   #try:
+   cursor.execute(sqlQuery,(req.month,req.year))
+   rows = cursor.fetchall()
+   if len(rows) > 0:
+       total = sum(rows[0],len(rows[0]))
+       result = dict()
+       result["total"] = total;
+       result["totals"] = rows[0]
+       percentages = [i*100/total for i in rows[0][:-1]]
+       healthcare = [800 * (f/100) for f in percentages]
+       result["percentages"] = [round(f,2) for f in percentages]
+       result["healthcare"] = [round(f,2) for f in healthcare]
+       return {"summary":result}
+   #except Exception as e:
+       #return {"summary":[],"error":"failed to connect to db"}
    return {"summary":[],"error":"no records found"} 
+
+class CsvReq(BaseModel):
+    token: str
+
+    month: str
+    year: str
+@app.post("/csvgenerator")
+def get_csv(req: CsvReq):
+    return {"csvfile":"todo"}
