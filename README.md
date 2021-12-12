@@ -13,5 +13,5 @@ Nasza aplikacja Navigator pozwala wyświetlać dane w łatwy i czytelny sposób,
 
 Domyślne hasło i login:
 
-- login: Kamil
-- hasło: Nowak
+- login: kamil
+- hasło: nowak
