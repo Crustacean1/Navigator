@@ -2,6 +2,8 @@ from fastapi import FastAPI, Response, Cookie, Request
 from pydantic import BaseModel
 from typing import Optional
 import mysql.connector
+import random
+import string
 
 app = FastAPI()
 
@@ -17,17 +19,26 @@ def hello_world():
 def verify_user(loginData: LoginData,response: Response):
     session = mysql.connector.connect(
         host="localhost",
+        port=3307,
         database="Navigator",
         user="root",
-        password="root"
+        password="plsnohack"
     )
+    
     cursor = session.cursor()
-    sqlQuery = "SELECT COUNT(id) FROM Users WHERE password=%s AND login=%s"
+    sqlQuery = "SELECT id FROM Users where password=%s and login=%s"
     cursor.execute(sqlQuery,(loginData.password,loginData.login))
-    rows = cursor.fetchAll()
+    rows = cursor.fetchall()
+
     if len(rows) > 0:
-        return {"login_status":"success"}
-    return {"login_status": "It's true"}
+        randomToken = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(64))
+        sqlQuery = "INSERT INTO Sessions (userId,loginDate,token,active) values (%s,NOW(),%s,TRUE)"
+        cursor.execute(sqlQuery,(rows[0][0],randomToken))
+        session.commit()
+        session.close()
+        return {"login_status":"success","token":randomToken,"userId":rows[0][0]}
+
+    return {"login_status": "permission denied"}
 @app.get("/user_profile")
 
 def display_profile(request: Request, user_login: Optional[str] = Cookie(None)):
