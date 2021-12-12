@@ -15,8 +15,8 @@ app.add_middleware(
     "*"
 ],
     allow_credentials=True,
-    allow_methods=[""],
-    allow_headers=[""],
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 class LoginData(BaseModel):
     login: str
@@ -38,8 +38,8 @@ def getUserFromToken(token: str):
         password="plsnohack"
     )
     cursor = session.cursor()
-    sqlQuery = "SELECT userId FROM Sessions WHERE token='dasfadsf'"#" AND timestampdiff(HOUR,Sessions.loginDate,NOW())<2"
-    cursor.execute(sqlQuery)#,("jpadfsasd"))
+    sqlQuery = "SELECT userId FROM Sessions WHERE token=%s "#" AND timestampdiff(HOUR,Sessions.loginDate,NOW())<2"
+    cursor.execute(sqlQuery,(token,))
     rows = cursor.fetchall()
     if len(rows)==1:
         return rows[0][0] 
@@ -74,7 +74,7 @@ def verify_user(loginData: LoginData):
         session.close()
         return {"login_status":"success","token":randomToken,"userId":rows[0][0]}
 
-    return {"login_status": "permission denied"}
+    return {"login_status": "permission denied","token":"","userId":-1}
 
 @app.post("/monthlyreport")
 def get_monthly_report(tok: TokenData):
