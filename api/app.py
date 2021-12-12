@@ -142,34 +142,35 @@ class SummaryReq(BaseModel):
     
 @app.post("/summary")
 def get_summary(req: SummaryReq):
-   userId = getUserFromToken(req.token)
-   if userId == -1:
-       return {"status":"permission denied"}
-   db = getDb()
-   cursor = db.cursor()
-   sqlQuery = "SELECT SUM(pit17),SUM(pit15),SUM(pit12),SUM(pit10),SUM(pit85),SUM(pit55),SUM(pit03) FROM Invoices WHERE MONTH(transactionDate)=%s AND YEAR(transactionDate)=%s";
-   #try:
-   cursor.execute(sqlQuery,(req.month,req.year))
-   rows = cursor.fetchall()
-   if len(rows) > 0:
-       total = sum(rows[0],len(rows[0]))
-       result = dict()
-       result["total"] = total;
-       result["totals"] = rows[0]
-       percentages = [i*100/total for i in rows[0][:-1]]
-       healthcare = [800 * (f/100) for f in percentages]
-       result["percentages"] = [round(f,2) for f in percentages]
-       result["healthcare"] = [round(f,2) for f in healthcare]
-       return {"summary":result}
-   #except Exception as e:
-       #return {"summary":[],"error":"failed to connect to db"}
-   return {"summary":[],"error":"no records found"} 
+    userId = getUserFromToken(req.token)
+    if userId == -1:
+        return {"status":"permission denied"}
+    db = getDb()
+    cursor = db.cursor()
+    sqlQuery = "SELECT SUM(pit17),SUM(pit15),SUM(pit12),SUM(pit10),SUM(pit85),SUM(pit55),SUM(pit03) FROM Invoices WHERE MONTH(transactionDate)=%s AND YEAR(transactionDate)=%s";
+    #try:
+    cursor.execute(sqlQuery,(req.month,req.year))
+    rows = cursor.fetchall()
+    if len(rows) > 0:
+        total = sum(rows[0],len(rows[0]))
+        result = dict()
+        result["total"] = total;
+        result["totals"] = rows[0]
+        percentages = [i*100/total for i in rows[0][:-1]]
+        healthcare = [800 * (f/100) for f in percentages]
+        result["percentages"] = [round(f,2) for f in percentages]
+        result["healthcare"] = [round(f,2) for f in healthcare]
+        return {"summary":result}
+    #except Exception as e:
+    #return {"summary":[],"error":"failed to connect to db"}
+    return {"summary":[],"error":"no records found"} 
 
 class CsvReq(BaseModel):
     token: str
 
     month: str
     year: str
+
 @app.post("/csvgenerator")
 def get_csv(req: CsvReq):
     userId = getUserFromToken(req.token)
@@ -191,3 +192,30 @@ def get_csv(req: CsvReq):
         result = result[:-2]
         result += '\n'
     return {"status":0,"csvfile":result}
+
+class CsvLoadReq(BaseModel):
+    token: str
+    content: str
+
+@app.post('/csvloader')
+def load_csv(req: CsvLoadReq):
+    userId = getUserFromToken(req.token)
+    if userId == -1:
+        return {"status" : 1,"desc":"permission denied"}
+    rows = req.content.split('\n')
+    data = []
+    for row in rows:
+        data.append(row.split(","))
+        for i in range(0,len(data[-1])):
+            data[-1][i] = data[-1][i].strip()
+    db = getDb()
+    cursor = db.cursor()
+    fields = ["contractorType","contractorNip","idCardNumber","transactionDate","registrationDate","pit17","pit15","pit12","pit10","pit85","pit55","pit03","notes"]
+    sqlRequest = "INSERT INTO Invoices " + ",".join(fields) + " values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+    try:
+        for x in data:
+            cursor.execute(sqlRequest,(tuple(x)))
+    except Exception as e:
+        return {"status":1,"desc":"Failed to insert some items"}
+    return {"status":0}
+        
