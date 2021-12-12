@@ -73,6 +73,16 @@ export function Report({ token }) {
         data.forEach((row) => {
             row.id = row.invoiceId;
         });
+        // each rpw pit convert from grosze to pln
+        data.forEach((row) => {
+            row.pit17 = row.pit17 / 100;
+            row.pit15 = row.pit15 / 100;
+            row.pit12 = row.pit12 / 100;
+            row.pit10 = row.pit10 / 100;
+            row.pit85 = row.pit85 / 100;
+            row.pit55 = row.pit55 / 100;
+            row.pit03 = row.pit03 / 100;
+        });
 
         setData(data);
     }
