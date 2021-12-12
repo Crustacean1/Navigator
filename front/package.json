@@ -1,7 +1,8 @@
 {
-  "name": "administration-panel",
-  "version": "0.1.0",
+  "name": "navigator",
+  "version": "0.1.1",
   "private": true,
+  "main": "src/electron-starter.js",
   "dependencies": {
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
@@ -10,10 +11,13 @@
     "react-scripts": "^4.0.3"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "set BROWSER=none && react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "electron": "electron .",
+    "electron-dev": "set BROWSER=none && react-scripts start & set ELECTRON_START_URL=http://localhost:3000 && electron .",
+    "full": "npm run start & npm run electron"
   },
   "eslintConfig": {
     "extends": [
@@ -35,6 +39,7 @@
   },
   "devDependencies": {
     "autoprefixer": "^9.8.8",
+    "electron": "^16.0.4",
     "postcss": "^7.0.39",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.2.17"
   }

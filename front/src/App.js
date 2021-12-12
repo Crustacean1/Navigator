@@ -1,11 +1,8 @@
 import React, { useState } from 'react';
 import './App.css';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import { Menu } from './nav/Menu';
-import { Home } from './ui/home/Home';
 import { Login } from './auth/login/Login'
-import { Reports } from './ui/reports/reports';
-import { MyPage } from './ui/myPage/myPage';
+import { Report } from './ui/report/Report';
 
 function setToken(userToken) {
   sessionStorage.setItem('token', JSON.stringify(userToken));
@@ -27,11 +24,9 @@ export function App() {
   else {
     return (
       <Router>
-        <Menu />
         <Switch>
-          <Route path='/' exact component={Home} />
-          <Route path='/mypage' component={() => <MyPage token={token} />} />
-          <Route path='/reports' component={() => <Reports token={token} />} />
+          <Route path='/' component={() => <Report token={token} />} />
+          {/* <Route path='/' exact component={Home} /> */}
         </Switch>
       </Router>
     );
