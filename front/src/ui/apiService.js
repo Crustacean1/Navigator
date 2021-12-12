@@ -1,12 +1,16 @@
 const url = "http://localhost:8000";
 
 export async function getData(token) {
-    const response = await fetch(`${url}/monthlyreport`, {
-        method: 'GET',
+    return await fetch(`${url}/monthlyreport`, {
+        method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-        }
-    }).then((response) => response.json())
-        .then((data) => console.log(data));
+        },
+        body: JSON.stringify({
+            token: token,
+            month: "04",
+            year: "2021"
+
+        })
+    });
 }

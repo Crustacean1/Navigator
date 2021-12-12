@@ -6,10 +6,13 @@
   "start_url": ".",
   "homepage": ".",
   "dependencies": {
+    "@emotion/react": "^11.7.0",
+    "@emotion/styled": "^11.6.0",
+    "@mui/material": "^5.2.3",
+    "@mui/x-data-grid": "^5.2.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-icons": "^3.10.0",
-    "react-router-dom": "^5.3.0",
     "react-scripts": "^4.0.3"
   },
   "scripts": {
@@ -43,7 +46,6 @@
     "autoprefixer": "^9.8.8",
     "electron": "^16.0.4",
     "electron-packager": "^15.4.0",
-    "postcss": "^7.0.39",
-    "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.2.17"
+    "postcss": "^7.0.39"
   }
 }
