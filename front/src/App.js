@@ -15,9 +15,6 @@ function getToken() {
 
 export function App() {
   const token = getToken();
-
-  console.log(token);
-
   if (!token) {
     return <Login setToken={setToken} getToken={getToken} />
   }
